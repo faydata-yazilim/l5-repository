@@ -162,6 +162,10 @@ class RequestCriteria implements CriteriaInterface
             $model = $model->with($with);
         }
 
+        $table = $model->getModel()->getTable();
+        $columns = Schema::getColumnListing($table);
+        $filter = array_intersect($columns, $filter);
+
         return $model;
     }
 
