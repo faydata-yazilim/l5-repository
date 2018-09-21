@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Prettus\Repository\Contracts\CriteriaInterface;
 use Prettus\Repository\Contracts\RepositoryInterface;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * Class RequestCriteria
@@ -154,6 +155,10 @@ class RequestCriteria implements CriteriaInterface
                 $filter = explode(';', $filter);
             }
 
+            $table = $model->getModel()->getTable();
+            $columns = Schema::getColumnListing($table);
+            $filter = array_intersect($columns, $filter);
+
             $model = $model->select($filter);
         }
 
@@ -161,10 +166,6 @@ class RequestCriteria implements CriteriaInterface
             $with = explode(';', $with);
             $model = $model->with($with);
         }
-
-        $table = $model->getModel()->getTable();
-        $columns = Schema::getColumnListing($table);
-        $filter = array_intersect($columns, $filter);
 
         return $model;
     }
